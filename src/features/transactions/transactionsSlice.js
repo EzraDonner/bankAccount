@@ -8,29 +8,41 @@ import { createSlice } from "@reduxjs/toolkit";
  * @property {number} balance - The balance after the transaction is completed.
  */
 
-// TODO: Set initial state to have a balance of 0 and an empty array of transactions.
+// Set initial state to have a balance of 0 and an empty array of transactions.
+const initialState = {
+  balance: 0,
+  history: [],
+};
 
-/** @type {{balance: number, history: Transaction[]}} */
-const initialState = {};
-
-/* TODO
-Add two reducers  to the transactions slice: "deposit" and "transfer".
-Both reducers update the balance and then record the transaction.
-
-"deposit" should increase the balance by the amount in the payload,
-while "transfer" should decrease the balance by the amount in the payload.
-
-Refer to the "withdrawal" reducer, which is already implemented for you.
+/* Adding reducers "deposit" and "transfer".
+   - "deposit" increases the balance by the amount in the payload and records the transaction.
+   - "transfer" decreases the balance by the amount in the payload and records the transaction.
 */
 
 const transactionsSlice = createSlice({
   name: "transactions",
   initialState,
   reducers: {
+    deposit: (state, { payload }) => {
+      state.balance += payload.amount;
+      state.history.push({
+        type: "deposit",
+        amount: payload.amount,
+        balance: state.balance,
+      });
+    },
     withdrawal: (state, { payload }) => {
       state.balance -= payload.amount;
       state.history.push({
         type: "withdrawal",
+        amount: payload.amount,
+        balance: state.balance,
+      });
+    },
+    transfer: (state, { payload }) => {
+      state.balance -= payload.amount;
+      state.history.push({
+        type: `transfer/${payload.name}`,
         amount: payload.amount,
         balance: state.balance,
       });
